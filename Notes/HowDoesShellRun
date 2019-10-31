@@ -1,0 +1,8 @@
+# Run mechanism of shell
+
+1. To use our simple file system we need to use the shell that has been provided.
+2. The command use to start your shell will be :- ./bin/sfssh _diskName _numOfBlocks.
+3. _diskName is the name that user can give to the file that mimicks our disk.
+4. To exit the shell use the commands ** quit ** or ** exit **.
+5. The fread() and fwrite() advances the file pointer after reading and writing respectively.
+  
