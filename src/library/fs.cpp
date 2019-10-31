@@ -62,7 +62,7 @@ FileSystem::debug(Disk* disk)
 bool
 FileSystem::format(Disk* disk)
 {
-  // check if the disk is already mounted -> if so than do nothing
+  // check if the disk is already mounted -> if so than do nothing, because a mounted disk cannot be formatted
   if(disk->mounted())
   {
     printf("The disk is already mounted!! cannot format\n");
@@ -70,10 +70,21 @@ FileSystem::format(Disk* disk)
   }
   // Write superblock
   Block block;
-  disk->read(0,block.Data);
   block.Super.MagicNumber = 0xf0f03410;
-  block.Super.
+  block.Super.Blocks = disk->Blocks;
+  block.Super.InodeBlocks = disk->Blocks/10;  // assign the 10% of the blocks for inode_block
+  if(disk->Blocks % 10 != 0)
+    block.Super.InodeBlocks += 1;
+
+  block.Super.Inodes = INODES_PER_BLOCK * block.Super.InodeBlocks;
+  disk->write(0,block.Data);
   // Clear all other blocks
+  for(int i=1;i<disk->Blocks;i++)
+  {
+    Block block;
+    block.Data = {0};
+    disk->write(i,block.Data);
+  }
   return true;
 }
 
