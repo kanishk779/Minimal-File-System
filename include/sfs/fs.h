@@ -36,8 +36,10 @@ private:
     };
 
     // TODO: Internal helper functions
-
+    void print_bitmap();
     // TODO: Internal member variables
+    int * bitmap;
+    int bitmap_size;
 
 public:
     static void debug(Disk *disk);

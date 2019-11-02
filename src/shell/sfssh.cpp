@@ -55,7 +55,7 @@ main(int argc, char* argv[])
     fprintf(stderr, "Usage: %s <diskfile> <nblocks>\n", argv[0]);
     return EXIT_FAILURE;
   }
-
+  // open the file as the new hard-disk
   try {
     disk.open(argv[1], atoi(argv[2]));
   } catch (std::runtime_error& e) {

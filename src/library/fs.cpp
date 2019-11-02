@@ -87,20 +87,54 @@ FileSystem::format(Disk* disk)
   }
   return true;
 }
-
+// Print Bitmap ----------------------------------------------------------------
+void
+FileSystem::print_bitmap()
+{
+  for(int i=0;i<bitmap_size;i++)
+  {
+    printf("block %d is %d\n",i,bitmap[i]);
+  }
+}
 // Mount file system -----------------------------------------------------------
 
 bool
 FileSystem::mount(Disk* disk)
 {
   // Read superblock
+  Block block;
+  disk->read(0,block.Data);
+  if(block.Super.MagicNumber != 0xf0f03410)
+  {
+    char what[BUFSIZ];
+    snprintf(what, BUFSIZ, "This is not a valid FileSystem - %s",strerror(errno));
+    throw std::runtime_error(what);
+  }
+  int total_blocks = block.Super.Blocks;
+  int total_inodes_blocks = block.Super.InodeBlocks;
+  // Some of the block which we think are data blocks can be 
+  // indirect blocks where each entry points to some other data blocks
 
   // Set device and mount
-
+  disk->mount();
   // Copy metadata
 
-  // Allocate free block bitmap
-
+  // Allocate free block bitmap which gives information about the free blocks present
+  bitmap = new int[total_blocks];
+  bitmap_size = total_blocks;
+  for(int i=1;i<=total_inodes_blocks;i++)
+  {
+    // for each of the inode block scan all the inodes contained in it
+    Block block;
+    disk->read(i,block.Data);
+    for(int j=0;j<INODES_PER_BLOCK;j++)
+    {
+      if(Inodes[j].valid == 1)
+      {
+        // check if the size is smaller than the
+      }
+    }
+  }
   return true;
 }
 
